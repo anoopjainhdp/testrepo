@@ -62,6 +62,6 @@ for os,build in OSBuildMap.items():
 		alert = True
 	
 if(alert):
-    os.system('echo "'+msgText+'" | mail -s "'+msgSubject+'" '+toEmail)
+	os.system('echo "'+msgText+'" | mail -s "'+msgSubject+'" '+toEmail)
 	sys.exit(1)
 	
