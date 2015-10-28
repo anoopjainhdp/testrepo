@@ -3,6 +3,7 @@ import re
 import sys
 import smtplib
 from email.mime.text import MIMEText
+import os
 
 
 OSBuildMap = {}
@@ -15,6 +16,7 @@ OSBuildMap['SUSE11']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/suse11/
 
 buildNum = sys.argv[1]
 diff4Alert = sys.argv[2]
+toEmail = sys.argv[3]
 msgText = ''
 msgSubject = ''
 alert = False
@@ -60,5 +62,6 @@ for os,build in OSBuildMap.items():
 		alert = True
 	
 if(alert):
-	sys.exit(1);
+    os.system('echo "'+msgText+'" | mail -s "'+msgSubject+'" '+toEmail)
+	sys.exit(1)
 	
