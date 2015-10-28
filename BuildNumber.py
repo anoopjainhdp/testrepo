@@ -8,6 +8,9 @@ from email.mime.text import MIMEText
 OSBuildMap = {}
 
 OSBuildMap['CENTOS6']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x"
+OSBuildMap['CENTOS7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x"
+OSBuildMap['UBUNTU12']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu12/2.x"
+OSBuildMap['SUSE11']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/suse11/2.x"
 
 
 buildNum = sys.argv[1]
@@ -19,8 +22,15 @@ alert = False
 # Repeat the following steps for all the OS combinations
 for os,build in OSBuildMap.items():
     # Generate the QE and Dev Build Repo Url
-    qeUrl = build+'/updates/'+buildNum+'/ambariqe.repo' 
-    bnUrl = build+'/latest/'+buildNum+'/ambaribn.repo'
+   
+    extn = '.repo'
+    
+    if(os.startswith('UBUNTU')):
+    	extn = '.list'
+    	
+    qeUrl = build+'/updates/'+buildNum+'/ambariqe'+extn
+    bnUrl = build+'/latest/'+buildNum+'/ambaribn'+extn
+    
     print qeUrl
     print bnUrl
  
