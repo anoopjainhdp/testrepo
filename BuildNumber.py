@@ -18,16 +18,16 @@ buildNum = sys.argv[1]
 diff4Alert = sys.argv[2]
 toEmail = sys.argv[3]
 msgText = ''
-msgSubject = ''
+msgSubject = 'Build Issue With Operating Systems : '
 alert = False
 
 # Repeat the following steps for all the OS combinations
-for os,build in OSBuildMap.items():
+for operatingSystem,build in OSBuildMap.items():
     # Generate the QE and Dev Build Repo Url
    
     extn = '.repo'
     
-    if(os.startswith('UBUNTU')):
+    if(operatingSystem.startswith('UBUNTU')):
     	extn = '.list'
     	
     qeUrl = build+'/updates/'+buildNum+'/ambariqe'+extn
@@ -49,16 +49,16 @@ for os,build in OSBuildMap.items():
     # Get the build difference between the Dev and QE Repos
     diff = int(bnVersionNum.group(1)) - int(qeVersionNum.group(1))    
     
-    print "Operating System " , os
+    print "Operating System " , operatingSystem
     print "QE Build Number ",qeVersionNum.group(1)
     print "Dev Build Number ",bnVersionNum.group(1)
 
     if(diff > int(diff4Alert)) :
 		print '==============Alert===================='
 		msgText += '=====================================\n'
-		msgText += 'Operating System :'+os+'\nQE Build Number :'+qeVersionNum.group(1)+'\nBN Build Number :'+bnVersionNum.group(1) 
+		msgText += 'Operating System :'+operatingSystem+'\nQE Build Number :'+qeVersionNum.group(1)+'\nBN Build Number :'+bnVersionNum.group(1) 
 		msgText +='\n=====================================\n'
-		msgSubject += os + ' '
+		msgSubject += operatingSystem + ' '
 		alert = True
 	
 if(alert):
