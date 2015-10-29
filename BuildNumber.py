@@ -10,8 +10,9 @@ OSBuildMap = {}
 
 OSBuildMap['CENTOS6']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x"
 OSBuildMap['CENTOS7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x"
-OSBuildMap['UBUNTU12']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu12/2.x"
+OSBuildMap['UBUNTU14’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu14/2.x”
 OSBuildMap['SUSE11']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/suse11/2.x"
+OSBuildMap[‘DEBIAN7’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian7/2.x”
 
 
 buildNum = sys.argv[1]
@@ -27,7 +28,7 @@ for operatingSystem,build in OSBuildMap.items():
    
     extn = '.repo'
     
-    if(operatingSystem.startswith('UBUNTU')):
+    if(operatingSystem.startswith('UBUNTU') or operatingSystem.startswith(‘DEBIAN’) ):
     	extn = '.list'
     	
     qeUrl = build+'/updates/'+buildNum+'/ambariqe'+extn
@@ -58,10 +59,10 @@ for operatingSystem,build in OSBuildMap.items():
 		msgText += '=====================================\n'
 		msgText += 'Operating System :'+operatingSystem+'\nQE Build Number :'+qeVersionNum.group(1)+'\nBN Build Number :'+bnVersionNum.group(1) 
 		msgText +='\n=====================================\n'
-		msgSubject += operatingSystem + ' '
+		if(alert)
+		    msgSubject += ‘ , ’
+		msgSubject += operatingSystem
 		alert = True
 	
 if(alert):
-	os.system('echo "'+msgText+'" | mail -s "'+msgSubject+'" '+toEmail)
-	sys.exit(1)
-	
+	os.system('echo "'+msgText+'" | mail -s "'+msgSubject+'" '+toEmail)	
