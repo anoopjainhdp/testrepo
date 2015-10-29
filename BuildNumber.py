@@ -64,7 +64,7 @@ for operatingSystem,build in OSBuildMap.items():
             if(alert):
                 msgSubject += ' , '
                 msgSubject += operatingSystem
-			alert = True
+            alert = True
     except:
         print "Exception for Operating System " , operatingSystem
         print sys.exc_info()[0]
