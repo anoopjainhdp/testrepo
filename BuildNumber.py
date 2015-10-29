@@ -10,16 +10,16 @@ OSBuildMap = {}
 
 OSBuildMap['CENTOS6']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x"
 OSBuildMap['CENTOS7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x"
-OSBuildMap['UBUNTU14’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu14/2.x”
+OSBuildMap['UBUNTU14']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu14/2.x"
 OSBuildMap['SUSE11']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/suse11/2.x"
-OSBuildMap['DEBIAN7’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian7/2.x”
+OSBuildMap['DEBIAN7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian7/2.x"
 
 
 buildNum = sys.argv[1]
 diff4Alert = sys.argv[2]
 toEmail = sys.argv[3]
 msgText = ''
-msgSubject = 'Build Issue With Operating Systems : '
+msgSubject = 'Build issues with '+buildNum + ' for '
 alert = False
 
 # Repeat the following steps for all the OS combinations
@@ -28,7 +28,7 @@ for operatingSystem,build in OSBuildMap.items():
    
     extn = '.repo'
     
-    if(operatingSystem.startswith('UBUNTU') or operatingSystem.startswith(‘DEBIAN’) ):
+    if(operatingSystem.startswith('UBUNTU') or operatingSystem.startswith('DEBIAN') ):
     	extn = '.list'
     	
     qeUrl = build+'/updates/'+buildNum+'/ambariqe'+extn
@@ -52,15 +52,15 @@ for operatingSystem,build in OSBuildMap.items():
     
     print "Operating System " , operatingSystem
     print "QE Build Number ",qeVersionNum.group(1)
-    print "Dev Build Number ",bnVersionNum.group(1)
+    print "Compiled Build Number ",bnVersionNum.group(1)
 
     if(diff > int(diff4Alert)) :
 		print '==============Alert===================='
 		msgText += '=====================================\n'
-		msgText += 'Operating System :'+operatingSystem+'\nQE Build Number :'+qeVersionNum.group(1)+'\nBN Build Number :'+bnVersionNum.group(1) 
+		msgText += 'Operating System :'+operatingSystem+'\nQE Build Number :'+qeVersionNum.group(1)+'\nCompiled Build Number :'+bnVersionNum.group(1) 
 		msgText +='\n=====================================\n'
-		if(alert)
-		    msgSubject += ‘ , ’
+		if(alert):
+		    msgSubject += ' , '
 		msgSubject += operatingSystem
 		alert = True
 	
