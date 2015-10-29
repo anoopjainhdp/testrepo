@@ -12,7 +12,7 @@ OSBuildMap['CENTOS6']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos
 OSBuildMap['CENTOS7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x"
 OSBuildMap['UBUNTU14’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/ubuntu14/2.x”
 OSBuildMap['SUSE11']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/suse11/2.x"
-OSBuildMap[‘DEBIAN7’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian7/2.x”
+OSBuildMap['DEBIAN7’]=“http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian7/2.x”
 
 
 buildNum = sys.argv[1]
