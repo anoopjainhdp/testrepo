@@ -58,30 +58,33 @@ for buildNum in buildNumArray:
             res = urllib2.urlopen(req)
             response = res.read()
             qeVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
-            repoDate = res.info().getheader("Last-Modified")
-            qeRepoUTime = dt.datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+            qerepoDate = res.info().getheader("Last-Modified")
+            qeRepoUTime = dt.datetime.strptime(qerepoDate,"%a, %d %b %Y %H:%M:%S GMT")
             
         
             req = urllib2.Request(bnUrl)
             res = urllib2.urlopen(req)
             response = res.read()
             bnVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
-            repoDate = res.info().getheader("Last-Modified")
-            bnRepoUTime = dt.datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+            bnrepoDate = res.info().getheader("Last-Modified")
+            bnRepoUTime = dt.datetime.strptime(bnrepoDate,"%a, %d %b %Y %H:%M:%S GMT")
            
             # Get the build difference between the Dev and QE Repos
             diff = int(bnVersionNum.group(1)) - int(qeVersionNum.group(1))
 
-            timeDiff = qeRepoUTime - bnRepoUTime
+            timeDiff = bnRepoUTime - qeRepoUTime
 
             print "Operating System " , operatingSystem
             print "QE Build Number ",qeVersionNum.group(1)
             print "Compiled Build Number ",bnVersionNum.group(1)
-            print "Time Diff In Days : ",int(timeDiff.seconds/(24*3600))
+            print "QE Build Date ",qerepoDate
+            print "Compiled Build Date ",bnrepoDate
+            print "Time Diff In Seconds : ",timeDiff.seconds
+            print "Time Diff In Days : ",timeDiff.days
             
             releaseOSBuildMap[buildNum][operatingSystem] = qeVersionNum.group(1)
 
-            if((diff > int(diff4Alert)) or (int(timeDiff.seconds/(24*3600)) > int(timeDiff4Alert))) :
+            if((diff > int(diff4Alert)) or (int(timeDiff.days) > int(timeDiff4Alert))) :
                 print '==============Alert Generated For Release '+buildNum+'===================='
                 if(not alert[buildNum]):
                     msgText[buildNum] = '\n-------------------Release '+buildNum+'------------------\n'
