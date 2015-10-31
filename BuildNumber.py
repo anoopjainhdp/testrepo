@@ -4,7 +4,7 @@ import sys
 import smtplib
 from email.mime.text import MIMEText
 import os
-import datetime
+import datetime as dt
 
 
 OSBuildMap = {}
@@ -18,7 +18,8 @@ OSBuildMap['DEBIAN7']="http://dev.hortonworks.com.s3.amazonaws.com/ambari/debian
 
 buildNumString = sys.argv[1]
 diff4Alert = sys.argv[2]
-toEmail = sys.argv[3]
+timeDiff4Alert = sys.argv[3]
+toEmail = sys.argv[4]
 
 finalAlert = False
 alert ={}
@@ -58,28 +59,29 @@ for buildNum in buildNumArray:
             response = res.read()
             qeVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
             repoDate = res.info().getheader("Last-Modified")
-            qeRepoUTime = datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
-            print qeRepoUTime
-
+            qeRepoUTime = dt.datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+            
+        
             req = urllib2.Request(bnUrl)
             res = urllib2.urlopen(req)
             response = res.read()
             bnVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
             repoDate = res.info().getheader("Last-Modified")
-            bnRepoUTime = datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+            bnRepoUTime = dt.datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
            
             # Get the build difference between the Dev and QE Repos
             diff = int(bnVersionNum.group(1)) - int(qeVersionNum.group(1))
-            timeDiff = bnRepoUTime - qeRepoUTime
+
+            timeDiff = qeRepoUTime - bnRepoUTime
 
             print "Operating System " , operatingSystem
             print "QE Build Number ",qeVersionNum.group(1)
             print "Compiled Build Number ",bnVersionNum.group(1)
-            print "Time Diff ",timediff
+            print "Time Diff In Days : ",int(timeDiff.seconds/(24*3600))
             
             releaseOSBuildMap[buildNum][operatingSystem] = qeVersionNum.group(1)
 
-            if(diff > int(diff4Alert)) :
+            if((diff > int(diff4Alert)) or (int(timeDiff.seconds/(24*3600)) > int(timeDiff4Alert))) :
                 print '==============Alert Generated For Release '+buildNum+'===================='
                 if(not alert[buildNum]):
                     msgText[buildNum] = '\n-------------------Release '+buildNum+'------------------\n'
