@@ -4,6 +4,7 @@ import sys
 import smtplib
 from email.mime.text import MIMEText
 import os
+import datetime
 
 
 OSBuildMap = {}
@@ -56,18 +57,25 @@ for buildNum in buildNumArray:
             res = urllib2.urlopen(req)
             response = res.read()
             qeVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
+            repoDate = res.info().getheader("Last-Modified")
+            qeRepoUTime = datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+            print qeRepoUTime
 
             req = urllib2.Request(bnUrl)
             res = urllib2.urlopen(req)
             response = res.read()
             bnVersionNum = re.search('VERSION_NUMBER=.*-([0-9]*)',response)
-
+            repoDate = res.info().getheader("Last-Modified")
+            bnRepoUTime = datetime.strptime(repoDate,"%a, %d %b %Y %H:%M:%S GMT")
+           
             # Get the build difference between the Dev and QE Repos
             diff = int(bnVersionNum.group(1)) - int(qeVersionNum.group(1))
+            timeDiff = bnRepoUTime - qeRepoUTime
 
             print "Operating System " , operatingSystem
             print "QE Build Number ",qeVersionNum.group(1)
             print "Compiled Build Number ",bnVersionNum.group(1)
+            print "Time Diff ",timediff
             
             releaseOSBuildMap[buildNum][operatingSystem] = qeVersionNum.group(1)
 
@@ -93,11 +101,14 @@ for buildNum in buildNumArray:
             print "Exception for Operating System " , operatingSystem
             print sys.exc_info()[0]
             
-    msgSubject[buildNum] +=') '
+    if(alert[buildNum]):
+        msgSubject[buildNum] +=') '
+    else:
+        msgSubject[buildNum] = 'No Build Issue With Release '+buildNum
 
 
 for buildNum,subject in msgSubject.items():
-    msgFinalSubject += subject
+        msgFinalSubject += subject
 
 for buildNum,text in msgText.items():
     msgFinalText += text
